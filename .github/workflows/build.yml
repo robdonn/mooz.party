@@ -13,11 +13,17 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Build
+    - name: Install Mise
       run: |
         curl https://mise.run | sh
         echo "$HOME/.local/share/mise/bin" >> $GITHUB_PATH
         echo "$HOME/.local/share/mise/shims" >> $GITHUB_PATH
+
+    - name: Install Dependencies
+      run: |
         mise install
+
+    - name: Run Build
+      run: |
         pnpm install
         pnpm build
