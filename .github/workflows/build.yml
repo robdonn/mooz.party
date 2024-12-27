@@ -28,9 +28,9 @@ jobs:
         pnpm install
         pnpm build
 
-    - name: Upload build artifacts (main only)
+    - name: Deploy to GitHub Pages (main only)
       if: ${{ github.ref == 'refs/heads/main' }}
-      uses: actions/upload-artifact@v3
+      uses: peaceiris/actions-gh-pages@v4
       with:
-        name: build-assets
-        path: dist/
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: dist/
