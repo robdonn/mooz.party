@@ -27,3 +27,9 @@ jobs:
       run: |
         pnpm install
         pnpm build
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: build-assets
+        path: dist/
