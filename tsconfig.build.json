@@ -1,8 +1,0 @@
-{
-  "extends": "@tsconfig/node22/tsconfig.json",
-  "compilerOptions": {
-    "composite": true
-  },
-  "exclude": ["src/**/*"],
-  "files": ["webpack.config.ts"]
-}
