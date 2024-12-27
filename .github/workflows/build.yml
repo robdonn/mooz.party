@@ -28,7 +28,8 @@ jobs:
         pnpm install
         pnpm build
 
-    - name: Upload build artifacts
+    - name: Upload build artifacts (main only)
+      if: ${{ github.ref == 'refs/heads/main' }}
       uses: actions/upload-artifact@v3
       with:
         name: build-assets
