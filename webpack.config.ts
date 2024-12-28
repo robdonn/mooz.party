@@ -27,6 +27,7 @@ const baseConfig: Configuration = {
           loader: 'ts-loader',
           options: {
             configFile: 'tsconfig.app.json',
+            transpileOnly: true,
           },
         },
         exclude: /node_modules/,
