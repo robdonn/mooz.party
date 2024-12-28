@@ -2,7 +2,11 @@
   "extends": "@tsconfig/recommended/tsconfig.json",
   "compilerOptions": {
     "composite": true,
-    "jsx": "react"
+    "jsx": "react",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   },
   "include": ["src/**/*"]
 }

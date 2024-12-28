@@ -3,6 +3,9 @@ import { createRoot } from 'react-dom/client';
 import './registerServiceWorker';
 import { App } from './App';
 
+import './global.css';
+import './index.css';
+
 const APP_ID = 'root';
 
 const rootElement = document.getElementById(APP_ID);
