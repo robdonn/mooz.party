@@ -1,5 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
+import './registerServiceWorker';
+import { App } from './App';
 
 const APP_ID = 'root';
 
@@ -11,8 +13,4 @@ if (!rootElement) {
 
 const root = createRoot(rootElement);
 
-root.render(
-  <React.StrictMode>
-    <h1>Mooz Party</h1>
-  </React.StrictMode>
-);
+root.render(<App />);

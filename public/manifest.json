@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json.schemastore.org/web-manifest",
+  "short_name": "Mooz Party",
+  "name": "Mooz Party: Conferencing for kids",
+  "description": "Mooz Party is a video conferencing app for kids. It is a safe and fun way for kids to pretend that they are working from home.",
+  "scope": "/",
+  "background_color": "#f5f4e9",
+  "theme_color": "#f5f4e9",
+  "start_url": "./?utm_source=web_app_manifest",
+  "display": "fullscreen",
+  "display_override": [
+    "fullscreen",
+    "standalone",
+    "minimal-ui",
+    "browser"
+  ],
+  "orientation": "any"
+}

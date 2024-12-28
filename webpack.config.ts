@@ -1,7 +1,8 @@
+import { join } from 'path';
 import type { Configuration } from 'webpack';
 import { merge } from 'webpack-merge';
 import 'webpack-dev-server';
-import { join } from 'path';
+import WorkboxWebpackPlugin from 'workbox-webpack-plugin';
 
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -12,7 +13,7 @@ const baseConfig: Configuration = {
     main: ['./src/index.tsx'],
   },
   output: {
-    filename: '[name].[contenthash].js',
+    filename: 'static/[name].[contenthash].js',
     path: join(__dirname, 'dist'),
     publicPath: '/',
   },
@@ -46,6 +47,8 @@ const devConfig: Configuration = {
   devtool: 'source-map',
   devServer: {
     port: 3000,
+    // Serve files from public directory
+    static: join(__dirname, 'public'),
   },
 };
 
@@ -61,6 +64,10 @@ const prodConfig: Configuration = {
             !resourcePath.endsWith('index.html'),
         },
       ],
+    }),
+    new WorkboxWebpackPlugin.GenerateSW({
+      clientsClaim: true,
+      skipWaiting: true,
     }),
   ],
 };
