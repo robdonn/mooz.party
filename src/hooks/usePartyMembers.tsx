@@ -2,12 +2,18 @@ import React from 'react';
 
 export const storageKey = 'mooz-party-members';
 
-export const usePartyMembers = () => {
-  // This is a custom hook that returns an array of party members
-  // The members are from a list of preset user profiles
-  // The list is kept in the local storage
+type PartyMembersContextType = {
+  partyMembers: string[];
+  addMember: (member: string) => void;
+  removeMember: (member: string) => void;
+};
 
-  // Get the party members from the local storage
+export const PartyMembersContext =
+  React.createContext<PartyMembersContextType | null>(null);
+
+export const PartyMembersProvider: React.FC<React.PropsWithChildren> = ({
+  children,
+}) => {
   const readMembers = () => {
     const raw = localStorage.getItem(storageKey);
 
@@ -22,7 +28,6 @@ export const usePartyMembers = () => {
 
   const [partyMembers, setPartyMembers] = React.useState(readMembers());
 
-  // Also returns functions to add or remove members
   const addMember = (member: string) => {
     localStorage.setItem(storageKey, JSON.stringify([...partyMembers, member]));
     setPartyMembers(readMembers());
@@ -36,5 +41,23 @@ export const usePartyMembers = () => {
     setPartyMembers(readMembers());
   };
 
-  return { partyMembers, addMember, removeMember };
+  return (
+    <PartyMembersContext.Provider
+      value={{ partyMembers, addMember, removeMember }}
+    >
+      {children}
+    </PartyMembersContext.Provider>
+  );
+};
+
+export const usePartyMembers = () => {
+  const context = React.useContext(PartyMembersContext);
+
+  if (!context) {
+    throw new Error(
+      'usePartyMembers must be used within a PartyMembersProvider'
+    );
+  }
+
+  return context;
 };
