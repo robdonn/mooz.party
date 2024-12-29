@@ -45,7 +45,7 @@ export const AddMember = () => {
       >
         <Plus />
       </Button>
-      <Drawer open={open}>
+      <Drawer open={open} onClose={() => setOpen(false)}>
         <DrawerContent>
           <div className="mx-auto w-full max-w-sm">
             <DrawerHeader>
