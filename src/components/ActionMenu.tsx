@@ -1,7 +1,8 @@
 import React from 'react';
-import { Video, VideoOff, Settings } from 'lucide-react';
+import { Video, VideoOff } from 'lucide-react';
 import { Button } from './ui/button';
 import { AddMember } from './AddMember';
+import { Settings } from './Settings';
 import { useWebcam } from '../hooks/useWebcam';
 
 export const ActionMenu: React.FC = () => {
@@ -19,12 +20,7 @@ export const ActionMenu: React.FC = () => {
         {webcamOn ? <VideoOff /> : <Video />}
       </Button>
       <AddMember />
-      <Button
-        variant="default"
-        className="inline-flex h-12 w-12 items-center justify-center rounded-full border-2 border-slate-300"
-      >
-        <Settings />
-      </Button>
+      <Settings />
     </footer>
   );
 };

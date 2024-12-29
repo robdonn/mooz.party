@@ -1,5 +1,5 @@
 import { join } from 'path';
-import type { Configuration } from 'webpack';
+import { type Configuration, DefinePlugin } from 'webpack';
 import { merge } from 'webpack-merge';
 import 'webpack-dev-server';
 import WorkboxWebpackPlugin from 'workbox-webpack-plugin';
@@ -42,6 +42,11 @@ const baseConfig: Configuration = {
   plugins: [
     new HtmlWebpackPlugin({
       template: 'public/index.html',
+    }),
+    new DefinePlugin({
+      'process.env.MOOZ_APP_VERSION': JSON.stringify(
+        process.env.MOOZ_APP_VERSION || '0.0.0'
+      ),
     }),
   ],
 };
