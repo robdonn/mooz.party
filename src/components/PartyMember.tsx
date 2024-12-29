@@ -15,7 +15,7 @@ export const PartyMember: React.FC<{ id: PresetMember['id'] }> = ({ id }) => {
     <div className="flex flex-col items-center relative">
       <img
         src={`/static/avatars/${avatar?.avatar}.jpg`}
-        className="video bg-red-300 text-center aspect-square min-h-40 max-h-60 object-cover"
+        className="video bg-red-300 text-center aspect-square min-h-60 max-h-60 object-cover"
       />
       <Button
         onClick={() => removeMember(id)}
