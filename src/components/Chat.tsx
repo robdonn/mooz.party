@@ -10,16 +10,25 @@ export const Chat: React.FC<{
 }> = ({ webcamOn, setWebcamOn }) => {
   const { partyMembers } = usePartyMembers();
 
+  const partySize = partyMembers.length;
+
+  const gridClasses = [
+    'grid-cols-1',
+    'grid-cols-2',
+    'grid-cols-2',
+    'grid-cols-2 md:grid-cols-2 lg:grid-cols-4',
+  ];
+
   return (
-    <ul className="flex flex-col gap-4 items-center justify-center p-4">
-      <li>
+    <div className="h-full flex items-center justify-center">
+      <div
+        className={`grid gap-4 p-4 w-full max-w-5xl mx-auto ${gridClasses[partySize]}`}
+      >
         <User webcamOn={webcamOn} setWebcamOn={setWebcamOn} />
-      </li>
-      {partyMembers.map((member: PresetMember['id']) => (
-        <li key={member}>
-          <PartyMember id={member} />
-        </li>
-      ))}
-    </ul>
+        {partyMembers.map((id: PresetMember['id']) => (
+          <PartyMember key={id} id={id} />
+        ))}
+      </div>
+    </div>
   );
 };

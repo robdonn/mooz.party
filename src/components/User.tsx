@@ -9,14 +9,15 @@ export const User: React.FC<{
   // If webcamOn is false, show placeholder with button to enable webcam
   // Otherwise, show webcam feed
 
+  const webcamRef = React.useRef<HTMLVideoElement>(null);
+
   React.useEffect(() => {
     if (webcamOn) {
       navigator.mediaDevices
         .getUserMedia({ video: true })
         .then((stream) => {
-          const video = document.querySelector('video');
-          if (video) {
-            video.srcObject = stream;
+          if (webcamRef.current) {
+            webcamRef.current.srcObject = stream;
           }
         })
         .catch((error) => {
@@ -27,14 +28,19 @@ export const User: React.FC<{
 
   if (webcamOn) {
     return (
-      <div className="video bg-slate-700 flex justify-center items-center aspect-square min-h-60 max-h-60">
-        <video className="w-60 h-60 object-cover" autoPlay muted />
+      <div className="aspect-w-16 aspect-h-9 bg-black rounded-md overflow-hidden flex items-center justify-center">
+        <video
+          ref={webcamRef}
+          className="object-cover aspect-video"
+          autoPlay
+          muted
+        />
       </div>
     );
   }
 
   return (
-    <div className="video bg-slate-700 flex justify-center items-center aspect-square min-h-60 max-h-60">
+    <div className="aspect-w-16 aspect-h-9 bg-transparent rounded-md overflow-hidden flex items-center justify-center">
       <Button
         type="button"
         variant="secondary"

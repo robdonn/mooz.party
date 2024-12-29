@@ -12,10 +12,10 @@ export const PartyMember: React.FC<{ id: PresetMember['id'] }> = ({ id }) => {
   const avatar = avatars.find((avatar) => avatar.id === id);
 
   return (
-    <div className="flex flex-col items-center relative">
+    <div className="aspect-w-16 aspect-h-9 bg-black rounded-md overflow-hidden flex items-center justify-center relative">
       <img
         src={`/static/avatars/${avatar?.avatar}.jpg`}
-        className="video bg-red-300 text-center aspect-square min-h-60 max-h-60 object-cover"
+        className="video text-center aspect-video object-cover"
       />
       <Button
         onClick={() => removeMember(id)}

@@ -12,9 +12,9 @@ export const App = () => {
       <PartyMembersProvider>
         <div className="flex flex-col h-svh">
           <Header />
-          <div className="flex-grow w-svw ">
+          <main className="flex-grow pt-16 pb-16 bg-gray-100">
             <Chat webcamOn={webcamOn} setWebcamOn={setWebcamOn} />
-          </div>
+          </main>
           <ActionMenu webcamOn={webcamOn} setWebcamOn={setWebcamOn} />
         </div>
       </PartyMembersProvider>

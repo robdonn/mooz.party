@@ -8,7 +8,7 @@ export const ActionMenu: React.FC<{
   setWebcamOn: (arg: any) => void;
 }> = ({ webcamOn, setWebcamOn }) => {
   return (
-    <div className="border-t-2 border-gray-200 p-4 flex justify-center items-center gap-10">
+    <footer className="bg-gray-800 text-white p-4 fixed bottom-0 left-0 right-0 z-10 flex items-center justify-evenly">
       <Button
         variant="default"
         className={`inline-flex h-12 w-12 items-center justify-center rounded-full ${
@@ -25,6 +25,6 @@ export const ActionMenu: React.FC<{
       >
         <Settings />
       </Button>
-    </div>
+    </footer>
   );
 };
