@@ -28,7 +28,7 @@ export const User: React.FC<{
 
   if (webcamOn) {
     return (
-      <div className="aspect-w-16 aspect-h-9 bg-black rounded-md overflow-hidden flex items-center justify-center">
+      <div className="aspect-w-16 aspect-h-9  rounded-md overflow-hidden flex items-center justify-center">
         <video
           ref={webcamRef}
           className="object-cover aspect-video"
@@ -45,6 +45,7 @@ export const User: React.FC<{
         type="button"
         variant="secondary"
         onClick={() => setWebcamOn(!webcamOn)}
+        className="w-16 h-16 rounded-full border-2 border-slate-800"
       >
         <Video />
       </Button>

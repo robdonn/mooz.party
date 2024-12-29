@@ -4,7 +4,7 @@ export const storageKey = 'mooz-party-members';
 
 type PartyMembersContextType = {
   partyMembers: string[];
-  addMember: (member: string) => void;
+  addMember: (members: string[]) => void;
   removeMember: (member: string) => void;
 };
 
@@ -28,8 +28,11 @@ export const PartyMembersProvider: React.FC<React.PropsWithChildren> = ({
 
   const [partyMembers, setPartyMembers] = React.useState(readMembers());
 
-  const addMember = (member: string) => {
-    localStorage.setItem(storageKey, JSON.stringify([...partyMembers, member]));
+  const addMember = (members: string[]) => {
+    localStorage.setItem(
+      storageKey,
+      JSON.stringify([...partyMembers, ...members])
+    );
     setPartyMembers(readMembers());
   };
 

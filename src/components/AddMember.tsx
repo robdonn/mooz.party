@@ -19,17 +19,19 @@ export const AddMember = () => {
   const { partyMembers, addMember } = usePartyMembers();
   const [open, setOpen] = React.useState(false);
   const [selectedMember, setSelectedMember] = React.useState<
-    PresetMember['id'] | null
-  >(null);
+    PresetMember['id'][]
+  >([]);
 
-  const submitDisabled = !selectedMember;
+  const submitDisabled = !selectedMember.length;
   const maxSelected = partyMembers.length >= 3;
+  const totalSelected = selectedMember.length + partyMembers.length;
 
   const handleSubmit = () => {
-    if (selectedMember) {
+    if (selectedMember.length) {
       addMember(selectedMember);
+
       setOpen(false);
-      setSelectedMember(null);
+      setSelectedMember([]);
     }
   };
 
@@ -37,7 +39,7 @@ export const AddMember = () => {
     <div>
       <Button
         variant="default"
-        className="inline-flex h-16 w-16 items-center justify-center rounded-full"
+        className="inline-flex h-16 w-16 items-center justify-center rounded-full border-2 border-slate-300"
         onClick={() => setOpen(true)}
         disabled={maxSelected}
       >
@@ -55,7 +57,7 @@ export const AddMember = () => {
             <div className="p-4 pb-0 flex justify-center">
               <ul className="grid grid-cols-2 gap-4">
                 {avatars.map(({ avatar, id, name }) => {
-                  const currentSelected = selectedMember === id;
+                  const currentSelected = selectedMember.includes(id);
                   const alreadySelected = partyMembers.includes(id);
 
                   return (
@@ -63,7 +65,19 @@ export const AddMember = () => {
                       <Button
                         variant="ghost"
                         type="button"
-                        onClick={() => setSelectedMember(id)}
+                        onClick={() =>
+                          setSelectedMember((selected) => {
+                            if (currentSelected) {
+                              return selected.filter((s) => s !== id);
+                            }
+
+                            if (totalSelected >= 3) {
+                              return selected;
+                            }
+
+                            return [...selected, id];
+                          })
+                        }
                         className="h-16 w-16"
                         disabled={alreadySelected}
                       >
@@ -74,7 +88,10 @@ export const AddMember = () => {
                               : 'border-transparent'
                           } `}
                         >
-                          <AvatarImage src={`/static/avatars/${avatar}.jpg`} />
+                          <AvatarImage
+                            src={`/static/avatars/${avatar}.webp`}
+                            className="object-cover"
+                          />
                           <AvatarFallback>{name}</AvatarFallback>
                         </Avatar>
                       </Button>
