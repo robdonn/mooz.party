@@ -1,14 +1,10 @@
 import React from 'react';
 import { Video } from 'lucide-react';
 import { Button } from './ui/button';
+import { useWebcam } from '../hooks/useWebcam';
 
-export const User: React.FC<{
-  webcamOn: boolean;
-  setWebcamOn: (arg: any) => void;
-}> = ({ webcamOn, setWebcamOn }) => {
-  // If webcamOn is false, show placeholder with button to enable webcam
-  // Otherwise, show webcam feed
-
+export const User: React.FC = () => {
+  const { webcamOn, setWebcamOn } = useWebcam();
   const webcamRef = React.useRef<HTMLVideoElement>(null);
   const streamRef = React.useRef<MediaStream | null>(null);
 
@@ -43,6 +39,7 @@ export const User: React.FC<{
           className="object-cover aspect-video"
           autoPlay
           muted
+          playsInline
         />
       </div>
     );

@@ -4,10 +4,7 @@ import { PartyMember } from './PartyMember';
 import { PresetMember } from '../types/Member';
 import { User } from './User';
 
-export const Chat: React.FC<{
-  webcamOn: boolean;
-  setWebcamOn: (arg: any) => void;
-}> = ({ webcamOn, setWebcamOn }) => {
+export const Chat: React.FC = () => {
   const { partyMembers } = usePartyMembers();
 
   const partySize = partyMembers.length;
@@ -24,7 +21,7 @@ export const Chat: React.FC<{
       <div
         className={`grid gap-4 p-4 w-full max-w-5xl mx-auto ${gridClasses[partySize]}`}
       >
-        <User webcamOn={webcamOn} setWebcamOn={setWebcamOn} />
+        <User />
         {partyMembers.map((id: PresetMember['id']) => (
           <PartyMember key={id} id={id} />
         ))}

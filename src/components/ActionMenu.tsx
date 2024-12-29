@@ -2,11 +2,11 @@ import React from 'react';
 import { Video, VideoOff, Settings } from 'lucide-react';
 import { Button } from './ui/button';
 import { AddMember } from './AddMember';
+import { useWebcam } from '../hooks/useWebcam';
 
-export const ActionMenu: React.FC<{
-  webcamOn: boolean;
-  setWebcamOn: (arg: any) => void;
-}> = ({ webcamOn, setWebcamOn }) => {
+export const ActionMenu: React.FC = () => {
+  const { webcamOn, setWebcamOn } = useWebcam();
+
   return (
     <footer className="bg-gray-800 text-white p-4 fixed bottom-0 left-0 right-0 z-10 flex items-center justify-evenly">
       <Button
