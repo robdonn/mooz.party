@@ -10,6 +10,7 @@ export const User: React.FC<{
   // Otherwise, show webcam feed
 
   const webcamRef = React.useRef<HTMLVideoElement>(null);
+  const streamRef = React.useRef<MediaStream | null>(null);
 
   React.useEffect(() => {
     if (webcamOn) {
@@ -19,10 +20,18 @@ export const User: React.FC<{
           if (webcamRef.current) {
             webcamRef.current.srcObject = stream;
           }
+
+          streamRef.current = stream;
         })
         .catch((error) => {
           console.error('Error accessing webcam:', error);
         });
+    } else {
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach((track) => {
+          track.stop();
+        });
+      }
     }
   }, [webcamOn]);
 
