@@ -28,7 +28,7 @@ jobs:
       - name: Run Build
         run: |
           pnpm install
-          echo "MOOZ_APP_VERSION=$(pnpm dlx uuid v4)" >> $GITHUB_ENV
+          echo "MOOZ_APP_VERSION = $(pnpm dlx uuid v4)" > .env
           pnpm build
 
       - name: Deploy to GitHub Pages (main only)
