@@ -25,7 +25,7 @@ export const ActionMenu: React.FC = () => {
           setLayout((layout) => (layout === 'grid' ? 'focused' : 'grid'))
         }
       >
-        {layout === 'focused' ? <LayoutPanelTop /> : <LayoutGrid />}
+        {layout === 'focused' ? <LayoutGrid /> : <LayoutPanelTop />}
       </Button>
       <Button
         variant="default"
