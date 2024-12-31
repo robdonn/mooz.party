@@ -12,7 +12,7 @@ export const PartyMember: React.FC<{ id: PresetMember['id'] }> = ({ id }) => {
   const avatar = avatars.find((avatar) => avatar.id === id);
 
   return (
-    <div className="aspect-w-16 aspect-h-9 portrait:aspect-w-9 portrait:aspect-h-16 rounded-md overflow-hidden flex items-center justify-center relative">
+    <div className="col-span-1 aspect-video rounded-md flex items-center justify-center relative border-2 border-slate-400">
       <img
         src={`/static/avatars/${avatar?.avatar}.webp`}
         className="video text-center aspect-video object-cover"
@@ -20,7 +20,7 @@ export const PartyMember: React.FC<{ id: PresetMember['id'] }> = ({ id }) => {
       <Button
         onClick={() => removeMember(id)}
         variant="secondary"
-        className="inline-flex h-12 w-12 portrait:h-12 portrait:w-12 items-center justify-center rounded-full absolute border-2 border-slate-400"
+        className="inline-flex h-8 w-8 items-center justify-center rounded-full absolute bottom-[-1rem] right-1 border-2 border-slate-400"
       >
         <X />
       </Button>

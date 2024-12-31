@@ -2,11 +2,15 @@ import React from 'react';
 import { Video } from 'lucide-react';
 import { Button } from './ui/button';
 import { useWebcam } from '../hooks/useWebcam';
+import { usePartyMembers } from '../hooks/usePartyMembers';
 
 export const User: React.FC = () => {
   const { webcamOn, setWebcamOn } = useWebcam();
   const webcamRef = React.useRef<HTMLVideoElement>(null);
   const streamRef = React.useRef<MediaStream | null>(null);
+  const { partyMembers } = usePartyMembers();
+
+  const colSpan = `col-span-${partyMembers.length || 1} md:col-span-1`;
 
   React.useEffect(() => {
     if (webcamOn) {
@@ -33,10 +37,12 @@ export const User: React.FC = () => {
 
   if (webcamOn) {
     return (
-      <div className="aspect-w-16 aspect-h-9 portrait:aspect-w-9 portrait:aspect-h-16 rounded-md overflow-hidden flex items-center justify-center">
+      <div
+        className={`${colSpan} aspect-video rounded-md overflow-hidden flex items-center justify-center border-2 border-slate-400`}
+      >
         <video
           ref={webcamRef}
-          className="object-cover aspect-video"
+          className="object-cover aspect-video scale-x-[-1]"
           autoPlay
           muted
           playsInline
@@ -46,12 +52,14 @@ export const User: React.FC = () => {
   }
 
   return (
-    <div className="aspect-w-16 aspect-h-9 portrait:aspect-w-9 portrait:aspect-h-16 bg-transparent rounded-md overflow-hidden flex items-center justify-center">
+    <div
+      className={`${colSpan} aspect-video bg-transparent rounded-md overflow-hidden flex items-center justify-center border-2 border-slate-400`}
+    >
       <Button
         type="button"
         variant="secondary"
         onClick={() => setWebcamOn(!webcamOn)}
-        className="w-16 h-16 portrait:w-16 portrait:h-16 rounded-full border-2 border-slate-800"
+        className="w-16 h-16 rounded-full border-2 border-slate-800 "
       >
         <Video />
       </Button>

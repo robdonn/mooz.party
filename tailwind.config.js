@@ -47,12 +47,7 @@ module.exports = {
     },
   },
   variants: {
-    extend: {
-      aspectRatio: ['portrait'],
-    },
+    extend: {},
   },
-  plugins: [
-    require('tailwindcss-animate'),
-    require('@tailwindcss/aspect-ratio'),
-  ],
+  plugins: [require('tailwindcss-animate')],
 };
