@@ -23,7 +23,22 @@ export const AddMember = () => {
     PresetMember['id'][]
   >([]);
 
-  const [showTooltip, setShowTooltip] = React.useState(true);
+  const [showTooltip, setShowTooltip] = React.useState(false);
+  const showTooltipDelay = React.useRef<NodeJS.Timeout | null>(null);
+
+  React.useEffect(() => {
+    if (showTooltipDelay.current) clearTimeout(showTooltipDelay.current);
+
+    if (!partyMembers.length && !open) {
+      showTooltipDelay.current = setTimeout(() => {
+        setShowTooltip(true);
+      }, 2000);
+    }
+
+    return () => {
+      if (showTooltipDelay.current) clearTimeout(showTooltipDelay.current);
+    };
+  }, [open, partyMembers.length]);
 
   const submitDisabled = !selectedMember.length;
   const maxSelected = partyMembers.length >= 3;

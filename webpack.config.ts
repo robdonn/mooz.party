@@ -6,8 +6,6 @@ import WorkboxWebpackPlugin from 'workbox-webpack-plugin';
 
 import 'dotenv/config';
 
-console.log(process.env);
-
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
