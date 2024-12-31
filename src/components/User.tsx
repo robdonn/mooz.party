@@ -3,14 +3,24 @@ import { Video } from 'lucide-react';
 import { Button } from './ui/button';
 import { useWebcam } from '../hooks/useWebcam';
 import { usePartyMembers } from '../hooks/usePartyMembers';
+import { useLayout } from '../hooks/useLayout';
 
 export const User: React.FC = () => {
   const { webcamOn, setWebcamOn } = useWebcam();
   const webcamRef = React.useRef<HTMLVideoElement>(null);
   const streamRef = React.useRef<MediaStream | null>(null);
   const { partyMembers } = usePartyMembers();
+  const { layout } = useLayout();
 
-  const colSpan = `col-span-${partyMembers.length || 1} md:col-span-1`;
+  const colSpanOptions = [
+    'col-span-1',
+    'col-span-1',
+    'col-span-2',
+    'col-span-3',
+  ];
+
+  const colSpan =
+    layout === 'focused' ? colSpanOptions[partyMembers.length] : 'col-span-1';
 
   React.useEffect(() => {
     if (webcamOn) {

@@ -3,9 +3,11 @@ import { usePartyMembers } from '../hooks/usePartyMembers';
 import { PartyMember } from './PartyMember';
 import { PresetMember } from '../types/Member';
 import { User } from './User';
+import { useLayout } from '../hooks/useLayout';
 
 export const Chat: React.FC = () => {
   const { partyMembers } = usePartyMembers();
+  const { layout } = useLayout();
 
   const partySize = partyMembers.length;
 
@@ -13,7 +15,7 @@ export const Chat: React.FC = () => {
     'grid-cols-1',
     'grid-cols-1 md:grid-cols-2',
     'grid-cols-2',
-    'grid-cols-3 md:grid-cols-2',
+    layout === 'focused' ? 'grid-cols-3' : 'grid-cols-2',
   ];
 
   return (
