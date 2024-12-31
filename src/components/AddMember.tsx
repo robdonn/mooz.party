@@ -14,6 +14,7 @@ import { usePartyMembers } from '../hooks/usePartyMembers';
 import { avatars } from '../data/avatars';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { PresetMember } from '../types/Member';
+import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 
 export const AddMember = () => {
   const { partyMembers, addMember } = usePartyMembers();
@@ -21,6 +22,8 @@ export const AddMember = () => {
   const [selectedMember, setSelectedMember] = React.useState<
     PresetMember['id'][]
   >([]);
+
+  const [showTooltip, setShowTooltip] = React.useState(true);
 
   const submitDisabled = !selectedMember.length;
   const maxSelected = partyMembers.length >= 3;
@@ -37,14 +40,28 @@ export const AddMember = () => {
 
   return (
     <div>
-      <Button
-        variant="default"
-        className="inline-flex h-16 w-16 items-center justify-center rounded-full border-2 border-slate-300"
-        onClick={() => setOpen(true)}
-        disabled={maxSelected}
-      >
-        <Plus />
-      </Button>
+      <Tooltip open={showTooltip}>
+        <TooltipTrigger asChild>
+          <Button
+            variant="default"
+            className="inline-flex h-16 w-16 items-center justify-center rounded-full border-2 border-slate-300"
+            onClick={() => {
+              if (showTooltip) {
+                setShowTooltip(false);
+              }
+
+              setOpen(true);
+            }}
+            disabled={maxSelected}
+          >
+            <Plus />
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent side="top" sideOffset={20}>
+          Add a party member
+        </TooltipContent>
+      </Tooltip>
+
       <Drawer open={open} onClose={() => setOpen(false)}>
         <DrawerContent>
           <div className="mx-auto w-full max-w-sm">
