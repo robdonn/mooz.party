@@ -12,6 +12,8 @@ export const User: React.FC = () => {
   const { partyMembers } = usePartyMembers();
   const { layout } = useLayout();
 
+  const disabled = !navigator.mediaDevices;
+
   const colSpanOptions = [
     'col-span-1',
     'col-span-1',
@@ -63,16 +65,20 @@ export const User: React.FC = () => {
 
   return (
     <div
-      className={`${colSpan} aspect-video bg-transparent rounded-md overflow-hidden flex items-center justify-center border-2 border-slate-400`}
+      className={`${colSpan} aspect-video bg-transparent rounded-md overflow-hidden flex flex-col items-center justify-center border-2 border-slate-400`}
     >
       <Button
         type="button"
         variant="secondary"
         onClick={() => setWebcamOn(!webcamOn)}
         className="w-16 h-16 rounded-full border-2 border-slate-800 "
+        disabled={disabled}
       >
         <Video />
       </Button>
+      {disabled && (
+        <p>Looks like your device is not compatible with this app</p>
+      )}
     </div>
   );
 };

@@ -33,6 +33,7 @@ export const ActionMenu: React.FC = () => {
           webcamOn ? 'bg-red-600' : ''
         }`}
         onClick={() => setWebcamOn(!webcamOn)}
+        disabled={!navigator.mediaDevices}
       >
         {webcamOn ? <VideoOff /> : <Video />}
       </Button>
