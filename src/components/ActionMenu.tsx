@@ -1,16 +1,11 @@
 import React from 'react';
-import {
-  Heart,
-  LayoutPanelTop,
-  LayoutGrid,
-  Video,
-  VideoOff,
-} from 'lucide-react';
+import { LayoutPanelTop, LayoutGrid, Video, VideoOff } from 'lucide-react';
 import { Button } from './ui/button';
 import { AddMember } from './AddMember';
 import { Settings } from './Settings';
 import { useWebcam } from '../hooks/useWebcam';
 import { useLayout } from '../hooks/useLayout';
+import { Donate } from './Donate';
 
 export const ActionMenu: React.FC = () => {
   const { webcamOn, setWebcamOn } = useWebcam();
@@ -39,12 +34,7 @@ export const ActionMenu: React.FC = () => {
       </Button>
       <AddMember />
       <Settings />
-      <Button
-        variant="default"
-        className={`inline-flex h-12 w-12 items-center justify-center rounded-full border-2 border-slate-300`}
-      >
-        <Heart />
-      </Button>
+      <Donate />
     </footer>
   );
 };

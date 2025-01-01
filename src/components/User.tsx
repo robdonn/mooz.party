@@ -77,7 +77,9 @@ export const User: React.FC = () => {
         <Video />
       </Button>
       {disabled && (
-        <p>Looks like your device is not compatible with this app</p>
+        <p className="text-center">
+          Looks like your device is not compatible with this app
+        </p>
       )}
     </div>
   );
