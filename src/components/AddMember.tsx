@@ -48,7 +48,7 @@ export const AddMember: React.FC<{ uploadCallback: () => void }> = ({
 
   const handleSubmit = () => {
     if (selectedMember.length) {
-      addMember(selectedMember);
+      addMember(selectedMember.map((id) => ({ id, type: 'preset' })));
 
       setOpen(false);
       setSelectedMember([]);
@@ -92,7 +92,9 @@ export const AddMember: React.FC<{ uploadCallback: () => void }> = ({
               <ul className="grid grid-cols-2 gap-4">
                 {avatars.map(({ avatar, id, name }) => {
                   const currentSelected = selectedMember.includes(id);
-                  const alreadySelected = partyMembers.includes(id);
+                  const alreadySelected = partyMembers.find(
+                    (partyMember) => partyMember.id === id
+                  );
 
                   return (
                     <li key={id} className="flex items-center gap-4">
@@ -113,7 +115,7 @@ export const AddMember: React.FC<{ uploadCallback: () => void }> = ({
                           })
                         }
                         className="h-16 w-16 rounded-full"
-                        disabled={alreadySelected}
+                        disabled={!!alreadySelected}
                       >
                         <Avatar
                           className={`h-16 w-16 border-2 ${

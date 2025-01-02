@@ -5,6 +5,8 @@ import { App } from './App';
 
 import './global.css';
 import './index.css';
+import { createParty, initDB, readParties } from './data/db';
+import { generateId } from './lib/utils/generateId';
 
 const APP_ID = 'root';
 
@@ -16,4 +18,15 @@ if (!rootElement) {
 
 const root = createRoot(rootElement);
 
-root.render(<App />);
+const init = async () => {
+  await initDB();
+
+  const parties = await readParties();
+  if (!parties.length) {
+    await createParty(generateId());
+  }
+
+  root.render(<App />);
+};
+
+init();

@@ -1,11 +1,17 @@
 import React from 'react';
+import {
+  addMembers,
+  readFirstParty,
+  removeMember as removeMemberFromDB,
+} from '../data/db';
+import { MemberEntry } from '../types/Member';
 
 export const storageKey = 'mooz-party-members';
 
 type PartyMembersContextType = {
-  partyMembers: string[];
-  addMember: (members: string[]) => void;
-  removeMember: (member: string) => void;
+  partyMembers: MemberEntry[];
+  addMember: (members: MemberEntry[]) => void;
+  removeMember: (member: MemberEntry) => void;
 };
 
 export const PartyMembersContext =
@@ -14,34 +20,39 @@ export const PartyMembersContext =
 export const PartyMembersProvider: React.FC<React.PropsWithChildren> = ({
   children,
 }) => {
-  const readMembers = () => {
-    const raw = localStorage.getItem(storageKey);
+  const [partyId, setPartyId] = React.useState<string | null>(null);
+  const readMembers = async () => {
+    const party = await readFirstParty();
 
-    if (!raw) {
-      localStorage.setItem(storageKey, JSON.stringify([]));
+    if (!party) {
+      throw new Error('No party found');
     }
 
-    const partyMembers = JSON.parse(raw || '[]');
+    if (party.id !== partyId) {
+      setPartyId(party.id);
+    }
 
-    return partyMembers;
+    return party.members;
   };
 
-  const [partyMembers, setPartyMembers] = React.useState(readMembers());
+  const [partyMembers, setPartyMembers] = React.useState([]);
 
-  const addMember = (members: string[]) => {
-    localStorage.setItem(
-      storageKey,
-      JSON.stringify([...partyMembers, ...members])
-    );
-    setPartyMembers(readMembers());
+  React.useEffect(() => {
+    readMembers().then(setPartyMembers);
+  }, []);
+
+  const addMember: PartyMembersContextType['addMember'] = async (members) => {
+    await addMembers(partyId as string, members);
+
+    readMembers().then(setPartyMembers);
   };
 
-  const removeMember = (member: string) => {
-    localStorage.setItem(
-      storageKey,
-      JSON.stringify(partyMembers.filter((m: string) => m !== member))
-    );
-    setPartyMembers(readMembers());
+  const removeMember: PartyMembersContextType['removeMember'] = async (
+    member
+  ) => {
+    await removeMemberFromDB(partyId as string, member.id);
+
+    readMembers().then(setPartyMembers);
   };
 
   return (

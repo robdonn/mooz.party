@@ -24,8 +24,8 @@ export const Chat: React.FC = () => {
         className={`grid gap-4 p-4 w-full max-w-5xl mx-auto ${gridClasses[partySize]}`}
       >
         <User />
-        {partyMembers.map((id: PresetMember['id']) => (
-          <PartyMember key={id} id={id} />
+        {partyMembers.map(({ id, type }) => (
+          <PartyMember key={id} id={id} type={type} />
         ))}
       </div>
     </div>

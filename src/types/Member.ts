@@ -9,7 +9,9 @@ export type CustomMember = {
   id: string;
   type: 'custom';
   name: string;
-  avatar: string;
+  avatar: Blob;
 };
 
 export type Member = PresetMember | CustomMember;
+
+export type MemberEntry = Pick<Member, 'id' | 'type'>;
