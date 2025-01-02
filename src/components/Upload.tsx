@@ -12,6 +12,8 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { usePartyMembers } from '../hooks/usePartyMembers';
 import { addNewCustomMeber } from '../data/db';
+import { Alert, AlertDescription, AlertTitle } from './ui/alert';
+import { ShieldCheck } from 'lucide-react';
 
 export const Upload: React.FC<{ open: boolean; close: () => void }> = ({
   open,
@@ -30,6 +32,17 @@ export const Upload: React.FC<{ open: boolean; close: () => void }> = ({
           <DialogDescription>Upload your own party members</DialogDescription>
         </DialogHeader>
         <div className="flex flex-col space-y-4">
+          <Alert>
+            <ShieldCheck color="green" />
+            <AlertTitle>Personal Images</AlertTitle>
+            <AlertDescription>
+              <p>
+                Any images added here will be stored locally on your device.
+                Data is never uploaded to the internet.
+              </p>
+              <p>This feature can be turned off in the settings menu.</p>
+            </AlertDescription>
+          </Alert>
           <div>
             <Label htmlFor="name">Name</Label>
             <Input

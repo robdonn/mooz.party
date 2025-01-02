@@ -12,10 +12,15 @@ import {
   DialogTitle,
   DialogTrigger,
 } from './ui/dialog';
+import { Label } from './ui/label';
+import { Switch } from './ui/switch';
+import { useRules } from '../hooks/useRules';
 
 const MOOZ_APP_VERSION = process.env.MOOZ_APP_VERSION;
 
 export const Settings = () => {
+  const { allowCustomMembers, setAllowCustomMembers } = useRules();
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -33,7 +38,20 @@ export const Settings = () => {
             Application Version (pre-release): {MOOZ_APP_VERSION}
           </DialogDescription>
         </DialogHeader>
-        <div className="flex items-center space-x-2">Content</div>
+        <div className="flex items-center space-x-2">
+          <ul className="w-full">
+            <li className="flex items-center w-full justify-between">
+              <Label htmlFor="allow-custom">
+                Allow uploading custom party members
+              </Label>
+              <Switch
+                id="allow-custom"
+                checked={allowCustomMembers}
+                onCheckedChange={(value) => setAllowCustomMembers(value)}
+              />
+            </li>
+          </ul>
+        </div>
         <DialogFooter className="sm:justify-start">
           <DialogClose asChild>
             <Button type="button" variant="secondary">

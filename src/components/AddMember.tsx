@@ -15,6 +15,7 @@ import { avatars } from '../data/avatars';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { PresetMember } from '../types/Member';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
+import { useRules } from '../hooks/useRules';
 
 export const AddMember: React.FC<{ uploadCallback: () => void }> = ({
   uploadCallback,
@@ -27,6 +28,8 @@ export const AddMember: React.FC<{ uploadCallback: () => void }> = ({
 
   const [showTooltip, setShowTooltip] = React.useState(false);
   const showTooltipDelay = React.useRef<NodeJS.Timeout | null>(null);
+
+  const { allowCustomMembers } = useRules();
 
   React.useEffect(() => {
     if (showTooltipDelay.current) clearTimeout(showTooltipDelay.current);
@@ -134,24 +137,26 @@ export const AddMember: React.FC<{ uploadCallback: () => void }> = ({
                     </li>
                   );
                 })}
-                <li className="flex items-center gap-4">
-                  <Button
-                    variant="ghost"
-                    type="button"
-                    onClick={() => {
-                      setOpen(false);
-                      setSelectedMember([]);
-                      uploadCallback();
-                    }}
-                    className="h-16 w-16 rounded-full"
-                  >
-                    <Avatar className="h-16 w-16 border-2 border-transparent">
-                      <AvatarFallback>
-                        <PlusIcon />
-                      </AvatarFallback>
-                    </Avatar>
-                  </Button>
-                </li>
+                {allowCustomMembers && (
+                  <li className="flex items-center gap-4">
+                    <Button
+                      variant="ghost"
+                      type="button"
+                      onClick={() => {
+                        setOpen(false);
+                        setSelectedMember([]);
+                        uploadCallback();
+                      }}
+                      className="h-16 w-16 rounded-full"
+                    >
+                      <Avatar className="h-16 w-16 border-2 border-transparent">
+                        <AvatarFallback>
+                          <PlusIcon />
+                        </AvatarFallback>
+                      </Avatar>
+                    </Button>
+                  </li>
+                )}
               </ul>
             </div>
             <DrawerFooter>
