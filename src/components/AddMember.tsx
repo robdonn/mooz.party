@@ -13,23 +13,33 @@ import { usePartyMembers } from '../hooks/usePartyMembers';
 
 import { avatars } from '../data/avatars';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
-import { PresetMember } from '../types/Member';
+import { CustomMember, MemberEntry } from '../types/Member';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 import { useRules } from '../hooks/useRules';
+import { readCustomMembers } from '../data/db';
 
 export const AddMember: React.FC<{ uploadCallback: () => void }> = ({
   uploadCallback,
 }) => {
   const { partyMembers, addMember } = usePartyMembers();
+  const [customMembers, setCustomMembers] = React.useState<CustomMember[]>([]);
   const [open, setOpen] = React.useState(false);
-  const [selectedMember, setSelectedMember] = React.useState<
-    PresetMember['id'][]
-  >([]);
+  const [selectedMember, setSelectedMember] = React.useState<MemberEntry[]>([]);
 
   const [showTooltip, setShowTooltip] = React.useState(false);
   const showTooltipDelay = React.useRef<NodeJS.Timeout | null>(null);
 
   const { allowCustomMembers } = useRules();
+
+  React.useEffect(() => {
+    if (allowCustomMembers) {
+      readCustomMembers().then((members) => {
+        setCustomMembers(
+          members.map((member) => ({ ...member, type: 'custom' }))
+        );
+      });
+    }
+  }, []);
 
   React.useEffect(() => {
     if (showTooltipDelay.current) clearTimeout(showTooltipDelay.current);
@@ -51,7 +61,7 @@ export const AddMember: React.FC<{ uploadCallback: () => void }> = ({
 
   const handleSubmit = () => {
     if (selectedMember.length) {
-      addMember(selectedMember.map((id) => ({ id, type: 'preset' })));
+      addMember(selectedMember.map(({ id, type }) => ({ id, type })));
 
       setOpen(false);
       setSelectedMember([]);
@@ -92,51 +102,55 @@ export const AddMember: React.FC<{ uploadCallback: () => void }> = ({
               </DrawerDescription>
             </DrawerHeader>
             <div className="p-4 pb-0 flex justify-center">
-              <ul className="grid grid-cols-2 gap-4">
-                {avatars.map(({ avatar, id, name }) => {
-                  const currentSelected = selectedMember.includes(id);
-                  const alreadySelected = partyMembers.find(
-                    (partyMember) => partyMember.id === id
-                  );
+              <ul className="grid grid-cols-4 gap-4">
+                {[...avatars, ...customMembers].map(
+                  ({ avatar, id, name, type }) => {
+                    const currentSelected = selectedMember.find(
+                      (selected) => selected.id === id
+                    );
+                    const alreadySelected = partyMembers.find(
+                      (partyMember) => partyMember.id === id
+                    );
 
-                  return (
-                    <li key={id} className="flex items-center gap-4">
-                      <Button
-                        variant="ghost"
-                        type="button"
-                        onClick={() =>
-                          setSelectedMember((selected) => {
-                            if (currentSelected) {
-                              return selected.filter((s) => s !== id);
-                            }
+                    return (
+                      <li key={id} className="flex items-center gap-4">
+                        <Button
+                          variant="ghost"
+                          type="button"
+                          onClick={() =>
+                            setSelectedMember((selected) => {
+                              if (currentSelected) {
+                                return selected.filter((s) => s.id !== id);
+                              }
 
-                            if (totalSelected >= 3) {
-                              return selected;
-                            }
+                              if (totalSelected >= 3) {
+                                return selected;
+                              }
 
-                            return [...selected, id];
-                          })
-                        }
-                        className="h-16 w-16 rounded-full"
-                        disabled={!!alreadySelected}
-                      >
-                        <Avatar
-                          className={`h-16 w-16 border-2 ${
-                            currentSelected
-                              ? 'border-cyan-400'
-                              : 'border-transparent'
-                          } `}
+                              return [...selected, { id, type }];
+                            })
+                          }
+                          className="h-16 w-16 rounded-full"
+                          disabled={!!alreadySelected}
                         >
-                          <AvatarImage
-                            src={`/static/avatars/${avatar}.webp`}
-                            className="object-cover"
-                          />
-                          <AvatarFallback>{name}</AvatarFallback>
-                        </Avatar>
-                      </Button>
-                    </li>
-                  );
-                })}
+                          <Avatar
+                            className={`h-16 w-16 border-2 ${
+                              currentSelected
+                                ? 'border-cyan-400'
+                                : 'border-transparent'
+                            } `}
+                          >
+                            <AvatarImage
+                              src={`/static/avatars/${avatar}.webp`}
+                              className="object-cover"
+                            />
+                            <AvatarFallback>{name}</AvatarFallback>
+                          </Avatar>
+                        </Button>
+                      </li>
+                    );
+                  }
+                )}
                 {allowCustomMembers && (
                   <li className="flex items-center gap-4">
                     <Button

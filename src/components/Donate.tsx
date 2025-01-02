@@ -36,7 +36,7 @@ export const Donate = () => {
           <div className="flex flex-col items-center space-x-2 gap-4">
             <Button asChild type="button" variant="default">
               <a href="https://ko-fi.com/robdonn" target="_blank">
-                <Coffee /> Support the app
+                Support the app
               </a>
             </Button>
           </div>
