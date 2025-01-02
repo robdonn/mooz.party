@@ -38,7 +38,8 @@ export const Upload: React.FC<{ open: boolean; close: () => void }> = ({
             <AlertDescription>
               <p>
                 Any images added here will be stored locally on your device.
-                Data is never uploaded to the internet.
+                Data is never uploaded to the internet. Do not use this feature
+                on public devices.
               </p>
               <p>This feature can be turned off in the settings menu.</p>
             </AlertDescription>
