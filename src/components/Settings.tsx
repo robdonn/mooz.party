@@ -15,14 +15,17 @@ import {
 import { Label } from './ui/label';
 import { Switch } from './ui/switch';
 import { useRules } from '../hooks/useRules';
+import { ParentalVerification } from './ParentalVerification';
 
 const MOOZ_APP_VERSION = process.env.MOOZ_APP_VERSION;
 
 export const Settings = () => {
   const { allowCustomMembers, setAllowCustomMembers } = useRules();
+  const [parentalControlPassed, setParentalControlPassed] =
+    React.useState(false);
 
   return (
-    <Dialog>
+    <Dialog onOpenChange={() => setParentalControlPassed(false)}>
       <DialogTrigger asChild>
         <Button
           variant="default"
@@ -39,18 +42,24 @@ export const Settings = () => {
           </DialogDescription>
         </DialogHeader>
         <div className="flex items-center space-x-2">
-          <ul className="w-full">
-            <li className="flex items-center w-full justify-between">
-              <Label htmlFor="allow-custom">
-                Allow uploading custom party members
-              </Label>
-              <Switch
-                id="allow-custom"
-                checked={allowCustomMembers}
-                onCheckedChange={(value) => setAllowCustomMembers(value)}
-              />
-            </li>
-          </ul>
+          {!parentalControlPassed ? (
+            <ParentalVerification
+              onSuccess={() => setParentalControlPassed(true)}
+            />
+          ) : (
+            <ul className="w-full">
+              <li className="flex items-center w-full justify-between">
+                <Label htmlFor="allow-custom">
+                  Allow uploading custom party members
+                </Label>
+                <Switch
+                  id="allow-custom"
+                  checked={allowCustomMembers}
+                  onCheckedChange={(value) => setAllowCustomMembers(value)}
+                />
+              </li>
+            </ul>
+          )}
         </div>
         <DialogFooter className="sm:justify-start">
           <DialogClose asChild>
