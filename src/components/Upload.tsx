@@ -36,12 +36,12 @@ export const Upload: React.FC<{ open: boolean; close: () => void }> = ({
             <ShieldCheck color="green" />
             <AlertTitle>Personal Images</AlertTitle>
             <AlertDescription>
-              <p>
-                Any images added here will be stored locally on your device.
-                Data is never uploaded to the internet. Do not use this feature
-                on public devices.
-              </p>
-              <p>This feature can be turned off in the settings menu.</p>
+              <ul className="list-disc list-inside">
+                <li>All images are stored locally on your device.</li>
+                <li>Data is never uploaded to the internet.</li>
+                <li>Do not use this feature on public devices.</li>
+                <li>This feature can be turned off in the settings menu.</li>
+              </ul>
             </AlertDescription>
           </Alert>
           <div>
