@@ -55,10 +55,4 @@ export const avatars: PresetMember[] = [
     name: 'Sparkle',
     avatar: 'sparkle',
   },
-  {
-    id: '10',
-    type: 'preset',
-    name: 'Zippy',
-    avatar: 'zippy',
-  },
 ];

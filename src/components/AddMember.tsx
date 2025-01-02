@@ -1,5 +1,5 @@
 import React from 'react';
-import { Plus } from 'lucide-react';
+import { Plus, PlusIcon } from 'lucide-react';
 import { Button } from './ui/button';
 import {
   Drawer,
@@ -16,7 +16,9 @@ import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { PresetMember } from '../types/Member';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 
-export const AddMember = () => {
+export const AddMember: React.FC<{ uploadCallback: () => void }> = ({
+  uploadCallback,
+}) => {
   const { partyMembers, addMember } = usePartyMembers();
   const [open, setOpen] = React.useState(false);
   const [selectedMember, setSelectedMember] = React.useState<
@@ -110,7 +112,7 @@ export const AddMember = () => {
                             return [...selected, id];
                           })
                         }
-                        className="h-16 w-16"
+                        className="h-16 w-16 rounded-full"
                         disabled={alreadySelected}
                       >
                         <Avatar
@@ -130,6 +132,24 @@ export const AddMember = () => {
                     </li>
                   );
                 })}
+                <li className="flex items-center gap-4">
+                  <Button
+                    variant="ghost"
+                    type="button"
+                    onClick={() => {
+                      setOpen(false);
+                      setSelectedMember([]);
+                      uploadCallback();
+                    }}
+                    className="h-16 w-16 rounded-full"
+                  >
+                    <Avatar className="h-16 w-16 border-2 border-transparent">
+                      <AvatarFallback>
+                        <PlusIcon />
+                      </AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </li>
               </ul>
             </div>
             <DrawerFooter>
