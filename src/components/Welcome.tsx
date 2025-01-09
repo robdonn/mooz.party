@@ -1,7 +1,10 @@
-import React, { FormEventHandler } from 'react';
+import React from 'react';
+import { CheckedState } from '@radix-ui/react-checkbox';
+import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -9,7 +12,6 @@ import {
 import { Button } from './ui/button';
 import { ChevronRight } from 'lucide-react';
 import { Checkbox } from './ui/checkbox';
-import { CheckedState } from '@radix-ui/react-checkbox';
 import { readWelcomeState, saveWelcomeState } from '../data/db';
 
 export const Welcome = () => {
@@ -33,6 +35,13 @@ export const Welcome = () => {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Welcome to Mooz Party!</DialogTitle>
+          <VisuallyHidden>
+            <DialogDescription>
+              Mooz Party is a <b>pretend</b> video chat app for kids to have fun
+              imaginary conversations with their toys, friends or some of our
+              pre-made characters.
+            </DialogDescription>
+          </VisuallyHidden>
         </DialogHeader>
         <div>
           <p>

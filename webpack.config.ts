@@ -9,7 +9,9 @@ import 'dotenv/config';
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-const baseConfig: Configuration = {
+const baseConfig: (mode: 'development' | 'production') => Configuration = (
+  mode
+) => ({
   name: 'mooz.party',
   entry: {
     main: ['./src/index.tsx'],
@@ -44,6 +46,9 @@ const baseConfig: Configuration = {
   plugins: [
     new HtmlWebpackPlugin({
       template: 'public/index.html',
+      templateParameters: {
+        isProduction: mode === 'production',
+      },
     }),
     new DefinePlugin({
       'process.env.MOOZ_APP_VERSION': JSON.stringify(
@@ -51,7 +56,7 @@ const baseConfig: Configuration = {
       ),
     }),
   ],
-};
+});
 
 const devConfig: Configuration = {
   mode: 'development',
@@ -88,8 +93,8 @@ export default (
   argv: { mode: 'development' | 'production' }
 ) => {
   if (argv.mode === 'development') {
-    return merge(baseConfig, devConfig);
+    return merge(baseConfig('development'), devConfig);
   }
 
-  return merge(baseConfig, prodConfig);
+  return merge(baseConfig('production'), prodConfig);
 };
