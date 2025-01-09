@@ -7,6 +7,7 @@ import { WebcamProvider } from './hooks/useWebcam';
 import { LayoutProvider } from './hooks/useLayout';
 import { TooltipProvider } from './components/ui/tooltip';
 import { RulesProvider } from './hooks/useRules';
+import { Welcome } from './components/Welcome';
 
 export const App = () => {
   return (
@@ -16,9 +17,10 @@ export const App = () => {
           <LayoutProvider>
             <WebcamProvider>
               <PartyMembersProvider>
-                <div className="flex flex-col h-svh">
+                {/* <Welcome /> */}
+                <div className="flex flex-col h-svh max-h-vh">
                   <Header />
-                  <main className="flex-grow pt-16 pb-16 bg-gray-100">
+                  <main className="flex-grow flex bg-gray-100">
                     <Chat />
                   </main>
                   <ActionMenu />
