@@ -27,12 +27,12 @@ export const Settings = () => {
     setShowWelcome,
   } = useRules();
   const [parentalControlPassed, setParentalControlPassed] =
-    React.useState(true);
+    React.useState(false);
 
   return (
     <Dialog
       onOpenChange={() => {
-        setParentalControlPassed(true);
+        setParentalControlPassed(false);
         showWelcome();
       }}
     >
@@ -57,7 +57,7 @@ export const Settings = () => {
               onSuccess={() => setParentalControlPassed(true)}
             />
           ) : (
-            <ul className="w-full">
+            <ul className="w-full flex flex-col gap-3">
               <li className="flex items-center w-full justify-between">
                 <Label htmlFor="allow-custom">
                   Allow uploading custom party members
