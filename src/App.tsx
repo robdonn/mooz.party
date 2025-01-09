@@ -17,7 +17,7 @@ export const App = () => {
           <LayoutProvider>
             <WebcamProvider>
               <PartyMembersProvider>
-                {/* <Welcome /> */}
+                <Welcome />
                 <div className="flex flex-col h-svh max-h-vh">
                   <Header />
                   <main className="flex-grow flex bg-gray-100">

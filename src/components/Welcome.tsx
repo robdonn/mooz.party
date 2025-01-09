@@ -1,7 +1,6 @@
-import React from 'react';
+import React, { FormEventHandler } from 'react';
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogFooter,
   DialogHeader,
@@ -9,12 +8,28 @@ import {
 } from './ui/dialog';
 import { Button } from './ui/button';
 import { ChevronRight } from 'lucide-react';
+import { Checkbox } from './ui/checkbox';
+import { CheckedState } from '@radix-ui/react-checkbox';
+import { readWelcomeState, saveWelcomeState } from '../data/db';
 
 export const Welcome = () => {
   const [isOpen, setIsOpen] = React.useState(true);
+  const [dontShowAgain, setDontShowAgain] = React.useState<CheckedState>(false);
+
+  const hidden = React.useMemo(() => readWelcomeState(), []);
+
+  if (hidden) {
+    return null;
+  }
 
   return (
-    <Dialog open={isOpen} onOpenChange={() => setIsOpen(false)}>
+    <Dialog
+      open={isOpen}
+      onOpenChange={() => {
+        saveWelcomeState(dontShowAgain as boolean);
+        setIsOpen(false);
+      }}
+    >
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Welcome to Mooz Party!</DialogTitle>
@@ -37,8 +52,26 @@ export const Welcome = () => {
             features that you may not want your child to use.
           </p>
         </div>
-        <DialogFooter>
-          <Button onClick={() => setIsOpen(false)}>
+        <DialogFooter className="sm:justify-between gap-4">
+          <div className="flex items-center space-x-2 justify-center">
+            <Checkbox
+              id="terms"
+              onCheckedChange={setDontShowAgain}
+              checked={dontShowAgain}
+            />
+            <label
+              htmlFor="terms"
+              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            >
+              Don't show again
+            </label>
+          </div>
+          <Button
+            onClick={() => {
+              saveWelcomeState(dontShowAgain as boolean);
+              setIsOpen(false);
+            }}
+          >
             Start Playing <ChevronRight />
           </Button>
         </DialogFooter>

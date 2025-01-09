@@ -66,7 +66,7 @@ export const Chat: React.FC = () => {
         </div>
       </li>
       {partyMembers.map(({ id, type }) => (
-        <li className={liClasses}>
+        <li className={liClasses} key={id}>
           <div className={containerOuterClasses}>
             <div className={containerInnerClasses}>
               <PartyMember key={id} id={id} type={type} />

@@ -14,6 +14,10 @@ export const initDB = async () => {
       if (!db.objectStoreNames.contains('Parties')) {
         db.createObjectStore('Parties', { keyPath: 'id' });
       }
+
+      if (!db.objectStoreNames.contains('Settings')) {
+        db.createObjectStore('Settings', { keyPath: 'id' });
+      }
     },
   });
 
@@ -225,4 +229,16 @@ export const removeMember = async (partyId: string, memberId: string) => {
 
   // Update the party
   await db.put('Parties', party);
+};
+
+// Save state for hiding welcome message in local storage instead of indexeddb
+export const saveWelcomeState = (hidden: boolean) => {
+  localStorage.setItem('moozParty-welcomeHidden', JSON.stringify(hidden));
+};
+
+// Read state for hiding welcome message from local storage instead of indexeddb
+export const readWelcomeState = () => {
+  const hidden = localStorage.getItem('moozParty-welcomeHidden');
+
+  return hidden ? JSON.parse(hidden) : false;
 };

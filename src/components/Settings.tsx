@@ -20,12 +20,22 @@ import { ParentalVerification } from './ParentalVerification';
 const MOOZ_APP_VERSION = process.env.MOOZ_APP_VERSION;
 
 export const Settings = () => {
-  const { allowCustomMembers, setAllowCustomMembers } = useRules();
+  const {
+    allowCustomMembers,
+    setAllowCustomMembers,
+    showWelcome,
+    setShowWelcome,
+  } = useRules();
   const [parentalControlPassed, setParentalControlPassed] =
-    React.useState(false);
+    React.useState(true);
 
   return (
-    <Dialog onOpenChange={() => setParentalControlPassed(false)}>
+    <Dialog
+      onOpenChange={() => {
+        setParentalControlPassed(true);
+        showWelcome();
+      }}
+    >
       <DialogTrigger asChild>
         <Button
           variant="default"
@@ -56,6 +66,14 @@ export const Settings = () => {
                   id="allow-custom"
                   checked={allowCustomMembers}
                   onCheckedChange={(value) => setAllowCustomMembers(value)}
+                />
+              </li>
+              <li className="flex items-center w-full justify-between">
+                <Label htmlFor="hide-welcome">Hide welcome message</Label>
+                <Switch
+                  id="hide-welcome"
+                  checked={showWelcome()}
+                  onCheckedChange={(value) => setShowWelcome(value)}
                 />
               </li>
             </ul>
