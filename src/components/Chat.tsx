@@ -43,13 +43,18 @@ export const Chat: React.FC = () => {
     'w-full',
     'h-auto',
     'aspect-[16/9]',
+    'portrait:aspect-[9/16]',
     'max-w-[100%]',
     'max-h-[100%]',
     'flex',
     'justify-center',
     'items-center'
   );
-  const containerInnerClasses = cn('aspect-[16/9]', 'h-[100%]');
+  const containerInnerClasses = cn(
+    'aspect-[16/9]',
+    'portrait:aspect-[9/16]',
+    'h-[100%]'
+  );
 
   return (
     <ul className={ulClasses}>

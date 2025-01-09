@@ -38,6 +38,7 @@ export const User: React.FC = () => {
 
   const containerClasses = cn(
     'aspect-[16/9]',
+    'portrait:aspect-[9/16]',
     'rounded-md',
     'overflow-hidden',
     'flex',
@@ -52,7 +53,7 @@ export const User: React.FC = () => {
       <div className={containerClasses}>
         <video
           ref={webcamRef}
-          className="object-cover scale-x-[-1] aspect-[16/9] w-full"
+          className="object-cover scale-x-[-1] aspect-[16/9] portrait:aspect-[9/16] w-full"
           autoPlay
           muted
           playsInline

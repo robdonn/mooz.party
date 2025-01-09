@@ -44,10 +44,18 @@ module.exports = {
         md: `calc(var(--radius) - 2px)`,
         sm: 'calc(var(--radius) - 4px)',
       },
+      objectPosition: {
+        avatar: 'center 25%',
+      },
     },
   },
   variants: {
-    extend: {},
+    extend: {
+      aspectRatio: ['portrait'],
+    },
   },
-  plugins: [require('tailwindcss-animate')],
+  plugins: [
+    require('tailwindcss-animate'),
+    require('@tailwindcss/aspect-ratio'),
+  ],
 };

@@ -14,12 +14,10 @@ export const PartyMember: React.FC<MemberEntry> = ({ id, type }) => {
   const getImageSrc = async () => {
     if (type === 'preset') {
       const preset = avatars.find((avatar) => avatar.id === id) as PresetMember;
-      return `/static/avatars/${preset.avatar}.webp`;
+      return `/static/avatars/${preset.avatar}.jpg`;
     }
 
     const { avatar } = await readCustomMember(id);
-
-    console.log(avatar);
 
     return URL.createObjectURL(avatar);
   };
@@ -29,10 +27,10 @@ export const PartyMember: React.FC<MemberEntry> = ({ id, type }) => {
   }, []);
 
   return (
-    <div className="col-span-1 aspect-video rounded-md flex items-center justify-center relative border-2 border-slate-400">
+    <div className="col-span-1 aspect-[16/9] portrait:aspect-[9/16] rounded-md flex items-center justify-center relative border-2 border-slate-400">
       <img
         src={src}
-        className="video text-center aspect-video object-cover h-full w-full"
+        className="video text-center aspect-[16/9] portrait:aspect-[9/16] object-cover object-avatar h-full w-full"
       />
       <Button
         onClick={() => removeMember({ id, type: 'preset' })}
