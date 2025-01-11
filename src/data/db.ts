@@ -2,6 +2,8 @@ import { openDB, type IDBPDatabase } from 'idb';
 import { generateId } from '../lib/utils/generateId';
 import { CustomMember, Member } from '../types/Member';
 
+const DB_VERSION = 2;
+
 type DatabaseSchema = {
   'Custom Members': {
     key: string;
@@ -26,16 +28,16 @@ type DatabaseSchema = {
 
 class DB {
   private db: IDBPDatabase<DatabaseSchema>;
-  private initialized: boolean;
 
   constructor() {
     this.db = null as unknown as IDBPDatabase<DatabaseSchema>;
-    this.initialized = false;
   }
 
   init = async () => {
-    const db = await openDB<DatabaseSchema>('Mooz Party', 1, {
+    const db = await openDB<DatabaseSchema>('Mooz Party', DB_VERSION, {
       upgrade(db) {
+        console.log(`Upgrading database to version ${DB_VERSION}`);
+
         if (!db.objectStoreNames.contains('Custom Members')) {
           db.createObjectStore('Custom Members', { keyPath: 'id' });
         }
@@ -51,7 +53,6 @@ class DB {
     });
 
     this.db = db;
-    this.initialized = true;
   };
 
   seedSettingsIfNotSet = async () => {
