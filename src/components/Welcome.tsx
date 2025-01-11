@@ -15,17 +15,14 @@ import { Checkbox } from './ui/checkbox';
 import { useRules } from '../hooks/useRules';
 
 export const Welcome = () => {
-  const {
-    showWelcomeMessage,
-    setShowWelcomeMessage,
-    showWelcomeMessageLoading,
-  } = useRules();
+  const { showWelcomeMessage, setShowWelcomeMessage, settingsLoading } =
+    useRules();
   const [isOpen, setIsOpen] = React.useState(showWelcomeMessage);
   const [dontShowAgain, setDontShowAgain] = React.useState<CheckedState>(false);
 
   React.useEffect(() => {
     setIsOpen(showWelcomeMessage);
-  }, [showWelcomeMessageLoading]);
+  }, [settingsLoading]);
 
   if (!showWelcomeMessage) {
     return null;
@@ -83,7 +80,7 @@ export const Welcome = () => {
           </div>
           <Button
             onClick={() => {
-              setShowWelcomeMessage(!dontShowAgain as boolean);
+              setShowWelcomeMessage({ show: !dontShowAgain as boolean });
               setIsOpen(false);
             }}
           >

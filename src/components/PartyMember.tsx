@@ -5,26 +5,23 @@ import { usePartyMembers } from '../hooks/usePartyMembers';
 import { MemberEntry, PresetMember } from '../types/Member';
 
 import { avatars } from '../data/avatars';
-import { readCustomMember } from '../data/db';
+import { useCustomMember } from '../hooks/db';
 
 export const PartyMember: React.FC<MemberEntry> = ({ id, type }) => {
   const { removeMember } = usePartyMembers();
   const [src, setSrc] = React.useState<string | undefined>();
-
-  const getImageSrc = async () => {
-    if (type === 'preset') {
-      const preset = avatars.find((avatar) => avatar.id === id) as PresetMember;
-      return `/static/avatars/${preset.avatar}.jpg`;
-    }
-
-    const { avatar } = await readCustomMember(id);
-
-    return URL.createObjectURL(avatar);
-  };
+  const { data: customMember } = useCustomMember(id, type === 'custom');
 
   React.useEffect(() => {
-    getImageSrc().then(setSrc);
-  }, []);
+    if (type === 'preset') {
+      const preset = avatars.find((avatar) => avatar.id === id) as PresetMember;
+      setSrc(`/static/avatars/${preset.avatar}.jpg`);
+    }
+
+    if (customMember) {
+      setSrc(URL.createObjectURL(customMember.avatar));
+    }
+  }, [customMember]);
 
   return (
     <div className="col-span-1 aspect-[16/9] portrait:aspect-[9/16] rounded-md flex items-center justify-center relative border-2 border-slate-400">

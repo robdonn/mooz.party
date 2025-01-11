@@ -11,7 +11,7 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { usePartyMembers } from '../hooks/usePartyMembers';
-import { addNewCustomMeber } from '../data/db';
+import { useAddNewCustomMember } from '../hooks/db';
 import { Alert, AlertDescription, AlertTitle } from './ui/alert';
 import { ShieldCheck } from 'lucide-react';
 
@@ -23,6 +23,13 @@ export const Upload: React.FC<{ open: boolean; close: () => void }> = ({
   const [name, setName] = React.useState('');
   const [fileSelected, setFileSelected] = React.useState(false);
   const { addMember } = usePartyMembers();
+  const { mutate: addNewCustomMember } = useAddNewCustomMember({
+    onSuccess(data) {
+      addMember([{ id: data, type: 'custom' }]);
+
+      close();
+    },
+  });
 
   return (
     <Dialog open={open} onOpenChange={close}>
@@ -79,11 +86,7 @@ export const Upload: React.FC<{ open: boolean; close: () => void }> = ({
             onClick={async () => {
               if (!file.current) return;
 
-              const id = await addNewCustomMeber(file.current, name);
-
-              addMember([{ id, type: 'custom' }]);
-
-              close();
+              addNewCustomMember({ file: file.current, name });
             }}
             disabled={!fileSelected || !name}
           >

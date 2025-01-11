@@ -231,6 +231,22 @@ class DB {
 
     return showWelcomeMessage?.value ?? true;
   };
+
+  saveAllowCustomMembers = async ({ allow }: { allow: boolean }) => {
+    await this.db.put('Settings', {
+      id: 'allowCustomMembers',
+      value: allow,
+    });
+  };
+
+  readAllowCustomMembers = async () => {
+    const allowCustomMembers = await this.db.get(
+      'Settings',
+      'allowCustomMembers'
+    );
+
+    return allowCustomMembers?.value ?? true;
+  };
 }
 
 export const db = new DB();

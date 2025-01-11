@@ -1,12 +1,19 @@
 import React from 'react';
-import { useSaveShowWelcomeMessage, useShowWelcomeMessage } from './db';
+import {
+  useAllowCustomMembers,
+  UseSaveAllowCustomMembers,
+  useSaveAllowCustomMembers,
+  UseSaveShowWelcomeMessage,
+  useSaveShowWelcomeMessage,
+  useShowWelcomeMessage,
+} from './db';
 
 type RulesContextType = {
   allowCustomMembers: boolean;
-  setAllowCustomMembers: React.Dispatch<React.SetStateAction<boolean>>;
+  setAllowCustomMembers: UseSaveAllowCustomMembers;
   showWelcomeMessage: boolean;
-  showWelcomeMessageLoading: boolean;
-  setShowWelcomeMessage: (hidden: boolean) => void;
+  setShowWelcomeMessage: UseSaveShowWelcomeMessage;
+  settingsLoading: boolean;
 };
 
 export const RulesContext = React.createContext<RulesContextType | null>(null);
@@ -16,25 +23,23 @@ export const RulesProvider: React.FC<React.PropsWithChildren> = ({
 }) => {
   const { data: showWelcomeMessage, isLoading: showWelcomeMessageLoading } =
     useShowWelcomeMessage();
-  const { mutate: setShowWelcomeMessageFn } = useSaveShowWelcomeMessage();
+  const { mutate: setShowWelcomeMessage } = useSaveShowWelcomeMessage();
 
-  const [allowCustomMembers, setAllowCustomMembers] =
-    React.useState<RulesContextType['allowCustomMembers']>(true);
+  const { data: allowCustomMembers, isLoading: allowCustomMembersLoading } =
+    useAllowCustomMembers();
+  const { mutate: setAllowCustomMembers } = useSaveAllowCustomMembers();
 
-  const setShowWelcomeMessage: RulesContextType['setShowWelcomeMessage'] = (
-    show
-  ) => {
-    setShowWelcomeMessageFn({ show });
-  };
+  const settingsLoading =
+    showWelcomeMessageLoading || allowCustomMembersLoading;
 
   return (
     <RulesContext.Provider
       value={{
-        allowCustomMembers,
+        allowCustomMembers: allowCustomMembers || true,
         setAllowCustomMembers,
         showWelcomeMessage: showWelcomeMessage || false,
-        showWelcomeMessageLoading,
         setShowWelcomeMessage,
+        settingsLoading,
       }}
     >
       {children}

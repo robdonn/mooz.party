@@ -64,7 +64,9 @@ export const Settings = () => {
                 <Switch
                   id="allow-custom"
                   checked={allowCustomMembers}
-                  onCheckedChange={(value) => setAllowCustomMembers(value)}
+                  onCheckedChange={(value) =>
+                    setAllowCustomMembers({ allow: value })
+                  }
                 />
               </li>
               <li className="flex items-center w-full justify-between">
@@ -72,7 +74,9 @@ export const Settings = () => {
                 <Switch
                   id="hide-welcome"
                   checked={showWelcomeMessage}
-                  onCheckedChange={(value) => setShowWelcomeMessage(value)}
+                  onCheckedChange={(value) =>
+                    setShowWelcomeMessage({ show: value })
+                  }
                 />
               </li>
             </ul>

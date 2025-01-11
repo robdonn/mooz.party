@@ -1,8 +1,20 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  type UseMutationOptions,
+  UseQueryOptions,
+} from '@tanstack/react-query';
 import { db } from '../data/db';
-import { Member } from '../types/Member';
+import { CustomMember, Member } from '../types/Member';
 
-export const useAddNewCustomMember = () => {
+export const useAddNewCustomMember = (
+  options?: UseMutationOptions<
+    string,
+    Error,
+    Parameters<typeof db.addNewCustomMember>[0]
+  >
+) => {
   const queryClient = useQueryClient();
 
   return useMutation<
@@ -11,11 +23,15 @@ export const useAddNewCustomMember = () => {
     Parameters<typeof db.addNewCustomMember>[0]
   >({
     mutationFn: db.addNewCustomMember,
-    onSuccess: () => {
+    onSuccess: (...args) => {
       // Invalidate the custom members query to refetch the data
       queryClient.refetchQueries({
         queryKey: ['customMembers'],
       });
+
+      if (options?.onSuccess) {
+        options.onSuccess(...args);
+      }
     },
   });
 };
@@ -27,10 +43,11 @@ export const useCustomMembers = () => {
   });
 };
 
-export const useCustomMember = (id: string) => {
+export const useCustomMember = (id: string, enabled: boolean) => {
   return useQuery({
     queryKey: ['customMember', id],
     queryFn: () => db.readCustomMember({ id }),
+    enabled,
   });
 };
 
@@ -137,3 +154,35 @@ export const useSaveShowWelcomeMessage = () => {
     },
   });
 };
+
+export type UseSaveShowWelcomeMessage = (
+  values: Parameters<typeof db.saveShowWelcomeMessage>[0]
+) => void;
+
+export const useAllowCustomMembers = () => {
+  return useQuery({
+    queryKey: ['allowCustomMembers'],
+    queryFn: db.readAllowCustomMembers,
+  });
+};
+
+export const useSaveAllowCustomMembers = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation<
+    void,
+    Error,
+    Parameters<typeof db.saveAllowCustomMembers>[0]
+  >({
+    mutationFn: db.saveAllowCustomMembers,
+    onSuccess: () => {
+      queryClient.refetchQueries({
+        queryKey: ['allowCustomMembers'],
+      });
+    },
+  });
+};
+
+export type UseSaveAllowCustomMembers = (
+  values: Parameters<typeof db.saveAllowCustomMembers>[0]
+) => void;
