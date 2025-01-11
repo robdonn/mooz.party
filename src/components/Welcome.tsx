@@ -12,15 +12,22 @@ import {
 import { Button } from './ui/button';
 import { ChevronRight } from 'lucide-react';
 import { Checkbox } from './ui/checkbox';
-import { readWelcomeState, saveWelcomeState } from '../data/db';
+import { useRules } from '../hooks/useRules';
 
 export const Welcome = () => {
-  const [isOpen, setIsOpen] = React.useState(true);
+  const {
+    showWelcomeMessage,
+    setShowWelcomeMessage,
+    showWelcomeMessageLoading,
+  } = useRules();
+  const [isOpen, setIsOpen] = React.useState(showWelcomeMessage);
   const [dontShowAgain, setDontShowAgain] = React.useState<CheckedState>(false);
 
-  const hidden = React.useMemo(() => readWelcomeState(), []);
+  React.useEffect(() => {
+    setIsOpen(showWelcomeMessage);
+  }, [showWelcomeMessageLoading]);
 
-  if (hidden) {
+  if (!showWelcomeMessage) {
     return null;
   }
 
@@ -28,7 +35,6 @@ export const Welcome = () => {
     <Dialog
       open={isOpen}
       onOpenChange={() => {
-        saveWelcomeState(dontShowAgain as boolean);
         setIsOpen(false);
       }}
     >
@@ -77,7 +83,7 @@ export const Welcome = () => {
           </div>
           <Button
             onClick={() => {
-              saveWelcomeState(dontShowAgain as boolean);
+              setShowWelcomeMessage(!dontShowAgain as boolean);
               setIsOpen(false);
             }}
           >

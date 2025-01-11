@@ -1,244 +1,235 @@
-import { openDB } from 'idb';
+import { openDB, type IDBPDatabase } from 'idb';
 import { generateId } from '../lib/utils/generateId';
 import { CustomMember, Member } from '../types/Member';
 
-// Init database with stores
-export const initDB = async () => {
-  // Open IndexedDB or create if it doesn't exist
-  const db = await openDB('Mooz Party', 1, {
-    upgrade(db) {
-      if (!db.objectStoreNames.contains('Custom Members')) {
-        db.createObjectStore('Custom Members', { keyPath: 'id' });
-      }
-
-      if (!db.objectStoreNames.contains('Parties')) {
-        db.createObjectStore('Parties', { keyPath: 'id' });
-      }
-
-      if (!db.objectStoreNames.contains('Settings')) {
-        db.createObjectStore('Settings', { keyPath: 'id' });
-      }
-    },
-  });
-
-  return db;
+type DatabaseSchema = {
+  'Custom Members': {
+    key: string;
+    value: Omit<CustomMember, 'type'>;
+  };
+  Parties: {
+    key: string;
+    value: {
+      id: string;
+      name: string;
+      members: Pick<Member, 'id' | 'type'>[];
+    };
+  };
+  Settings: {
+    key: 'showWelcomeMessage' | 'allowCustomMembers';
+    value: {
+      id: 'showWelcomeMessage' | 'allowCustomMembers';
+      value: boolean;
+    };
+  };
 };
 
-export const addNewCustomMeber = async (file: File, name: string) => {
-  const id = generateId();
+class DB {
+  private db: IDBPDatabase<DatabaseSchema>;
+  private initialized: boolean;
 
-  // Convert the file into a Blob (if needed, it's already a Blob)
-  const imageBlob = new Blob([file], { type: file.type });
+  constructor() {
+    this.db = null as unknown as IDBPDatabase<DatabaseSchema>;
+    this.initialized = false;
+  }
 
-  // Open IndexedDB or create if it doesn't exist
-  const db = await openDB('Mooz Party', 1, {
-    upgrade(db) {
-      if (!db.objectStoreNames.contains('Custom Members')) {
-        db.createObjectStore('Custom Members', { keyPath: 'id' });
-      }
-    },
-  });
+  init = async () => {
+    const db = await openDB<DatabaseSchema>('Mooz Party', 1, {
+      upgrade(db) {
+        if (!db.objectStoreNames.contains('Custom Members')) {
+          db.createObjectStore('Custom Members', { keyPath: 'id' });
+        }
 
-  const customMember: Omit<CustomMember, 'type'> = {
-    id,
-    name,
-    avatar: imageBlob,
+        if (!db.objectStoreNames.contains('Parties')) {
+          db.createObjectStore('Parties', { keyPath: 'id' });
+        }
+
+        if (!db.objectStoreNames.contains('Settings')) {
+          db.createObjectStore('Settings', { keyPath: 'id' });
+        }
+      },
+    });
+
+    this.db = db;
+    this.initialized = true;
   };
 
-  // Save to IndexedDB
-  await db.add('Custom Members', customMember);
+  seedSettingsIfNotSet = async () => {
+    const showWelcomeMessage = await this.db.get(
+      'Settings',
+      'showWelcomeMessage'
+    );
+    const allowCustomMembers = await this.db.get(
+      'Settings',
+      'allowCustomMembers'
+    );
 
-  return id;
-};
+    if (!showWelcomeMessage) {
+      await this.db.add('Settings', {
+        id: 'showWelcomeMessage',
+        value: true,
+      });
+    }
 
-// Read all custom members from IndexedDB
-export const readCustomMembers = async (): Promise<
-  Omit<CustomMember, 'type'>[]
-> => {
-  // Open IndexedDB or create if it doesn't exist
-  const db = await openDB('Mooz Party', 1, {
-    upgrade(db) {
-      if (!db.objectStoreNames.contains('Custom Members')) {
-        db.createObjectStore('Custom Members', { keyPath: 'id' });
-      }
-    },
-  });
+    if (!allowCustomMembers) {
+      await this.db.add('Settings', {
+        id: 'allowCustomMembers',
+        value: true,
+      });
+    }
+  };
 
-  // Read from IndexedDB
-  return db.getAll('Custom Members');
-};
+  addNewCustomMember = async ({ file, name }: { file: File; name: string }) => {
+    const id = generateId();
 
-// Read custom member from IndexedDB with the given id
-export const readCustomMember = async (
-  id: string
-): Promise<Omit<CustomMember, 'type'>> => {
-  // Open IndexedDB or create if it doesn't exist
-  const db = await openDB('Mooz Party', 1, {
-    upgrade(db) {
-      if (!db.objectStoreNames.contains('Custom Members')) {
-        db.createObjectStore('Custom Members', { keyPath: 'id' });
-      }
-    },
-  });
+    // Convert the file into a Blob (if needed, it's already a Blob)
+    const imageBlob = new Blob([file], { type: file.type });
 
-  // Read from IndexedDB
-  return db.get('Custom Members', id);
-};
+    const customMember: Omit<CustomMember, 'type'> = {
+      id,
+      name,
+      avatar: imageBlob,
+    };
 
-// Remove custom member from IndexedDB with the given id
-export const removeCustomMember = async (id: string) => {
-  // Open IndexedDB or create if it doesn't exist
-  const db = await openDB('Mooz Party', 1, {
-    upgrade(db) {
-      if (!db.objectStoreNames.contains('Custom Members')) {
-        db.createObjectStore('Custom Members', { keyPath: 'id' });
-      }
-    },
-  });
+    // Save to IndexedDB
+    await this.db.add('Custom Members', customMember);
 
-  // Remove from IndexedDB
-  await db.delete('Custom Members', id);
-};
+    return id;
+  };
 
-// Create party with an id, optional name and can contain up to 3 members made up of an id and member type, being custom or preset
-export const createParty = async (
-  id: string,
-  name: string = '',
-  members: Pick<Member, 'id' | 'type'>[] = []
-) => {
-  // Open IndexedDB or create if it doesn't exist
-  const db = await openDB('Mooz Party', 1, {
-    upgrade(db) {
-      if (!db.objectStoreNames.contains('Parties')) {
-        db.createObjectStore('Parties', { keyPath: 'id' });
-      }
-    },
-  });
+  // Read all custom members from IndexedDB
+  readCustomMembers = async (): Promise<Omit<CustomMember, 'type'>[]> => {
+    // Read from IndexedDB
+    return this.db.getAll('Custom Members');
+  };
 
-  // Save to IndexedDB
-  await db.add('Parties', {
+  // Read custom member from IndexedDB with the given id
+  readCustomMember = async ({
     id,
-    name,
+  }: {
+    id: string;
+  }): Promise<Omit<CustomMember, 'type'> | undefined> => {
+    // Read from IndexedDB
+    return this.db.get('Custom Members', id);
+  };
+
+  // Remove custom member from IndexedDB with the given id
+  removeCustomMember = async (id: string) => {
+    // Remove from IndexedDB
+    await this.db.delete('Custom Members', id);
+  };
+
+  // Create party with an id, optional name and can contain up to 3 members made up of an id and member type, being custom or preset
+  createParty = async (
+    id: string,
+    name: string = '',
+    members: Pick<Member, 'id' | 'type'>[] = []
+  ) => {
+    // Save to IndexedDB
+    await this.db.add('Parties', {
+      id,
+      name,
+      members,
+    });
+  };
+
+  readParty = async ({ partyId }: { partyId: string }) => {
+    // Read from IndexedDB
+    return this.db.get('Parties', partyId);
+  };
+
+  readParties = async () => {
+    // Read from IndexedDB
+    return this.db.getAll('Parties');
+  };
+
+  readFirstParty = async () => {
+    const parties = await this.readParties();
+
+    return parties[0];
+  };
+
+  addMember = async ({
+    partyId,
+    member,
+  }: {
+    partyId: string;
+    member: Pick<Member, 'id' | 'type'>;
+  }) => {
+    // Get the party
+    const party = await this.db.get('Parties', partyId);
+
+    if (!party) {
+      return;
+    }
+
+    // Add the member
+    party.members.push(member);
+
+    // Update the party
+    await this.db.put('Parties', party);
+  };
+
+  addMembers = async ({
+    partyId,
     members,
-  });
-};
+  }: {
+    partyId: string;
+    members: Pick<Member, 'id' | 'type'>[];
+  }) => {
+    // Get the party
+    const party = await this.db.get('Parties', partyId);
 
-// Read the first party from IndexedDB or create a new one if it doesn't exist
-export const readParty = async (partyId: string) => {
-  // Open IndexedDB or create if it doesn't exist
-  const db = await openDB('Mooz Party', 1, {
-    upgrade(db) {
-      if (!db.objectStoreNames.contains('Parties')) {
-        db.createObjectStore('Parties', { keyPath: 'id' });
-      }
-    },
-  });
+    if (!party) {
+      return;
+    }
 
-  // Read from IndexedDB
-  return db.get('Parties', partyId);
-};
+    // Add the members
+    party.members.push(...members);
 
-// Read all parties from IndexedDB
-export const readParties = async () => {
-  // Open IndexedDB or create if it doesn't exist
-  const db = await openDB('Mooz Party', 1, {
-    upgrade(db) {
-      if (!db.objectStoreNames.contains('Parties')) {
-        db.createObjectStore('Parties', { keyPath: 'id' });
-      }
-    },
-  });
+    // Update the party
+    await this.db.put('Parties', party);
+  };
 
-  // Read from IndexedDB
-  return db.getAll('Parties');
-};
+  // Remove member from the party with the given id
+  removeMember = async ({
+    partyId,
+    memberId,
+  }: {
+    partyId: string;
+    memberId: string;
+  }) => {
+    // Get the party
+    const party = await this.db.get('Parties', partyId);
 
-// Read first party
-export const readFirstParty = async () => {
-  const parties = await readParties();
+    if (!party) {
+      return;
+    }
 
-  return parties[0];
-};
+    // Remove the member
+    party.members = party.members.filter(
+      (member: Pick<Member, 'id' | 'type'>) => member.id !== memberId
+    );
 
-// Add member to the party with the given id
-export const addMember = async (
-  partyId: string,
-  member: Pick<Member, 'id' | 'type'>
-) => {
-  // Open IndexedDB or create if it doesn't exist
-  const db = await openDB('Mooz Party', 1, {
-    upgrade(db) {
-      if (!db.objectStoreNames.contains('Parties')) {
-        db.createObjectStore('Parties', { keyPath: 'id' });
-      }
-    },
-  });
+    // Update the party
+    await this.db.put('Parties', party);
+  };
 
-  // Get the party
-  const party = await db.get('Parties', partyId);
+  saveShowWelcomeMessage = async ({ show }: { show: boolean }) => {
+    await this.db.put('Settings', {
+      id: 'showWelcomeMessage',
+      value: show,
+    });
+  };
 
-  // Add the member
-  party.members.push(member);
+  readShowWelcomeMessage = async () => {
+    const showWelcomeMessage = await this.db.get(
+      'Settings',
+      'showWelcomeMessage'
+    );
 
-  // Update the party
-  await db.put('Parties', party);
-};
+    return showWelcomeMessage?.value ?? true;
+  };
+}
 
-// Add multiple members to the party with the given id
-export const addMembers = async (
-  partyId: string,
-  newMembers: Pick<Member, 'id' | 'type'>[]
-) => {
-  // Open IndexedDB or create if it doesn't exist
-  const db = await openDB('Mooz Party', 1, {
-    upgrade(db) {
-      if (!db.objectStoreNames.contains('Parties')) {
-        db.createObjectStore('Parties', { keyPath: 'id' });
-      }
-    },
-  });
-
-  // Get the party
-  const party = await db.get('Parties', partyId);
-
-  // Add the members
-  party.members.push(...newMembers);
-
-  // Update the party
-  await db.put('Parties', party);
-};
-
-// Remove member from the party with the given id
-export const removeMember = async (partyId: string, memberId: string) => {
-  // Open IndexedDB or create if it doesn't exist
-  const db = await openDB('Mooz Party', 1, {
-    upgrade(db) {
-      if (!db.objectStoreNames.contains('Parties')) {
-        db.createObjectStore('Parties', { keyPath: 'id' });
-      }
-    },
-  });
-
-  // Get the party
-  const party = await db.get('Parties', partyId);
-
-  // Remove the member
-  party.members = party.members.filter(
-    (member: Pick<Member, 'id' | 'type'>) => member.id !== memberId
-  );
-
-  // Update the party
-  await db.put('Parties', party);
-};
-
-// Save state for hiding welcome message in local storage instead of indexeddb
-export const saveWelcomeState = (hidden: boolean) => {
-  localStorage.setItem('moozParty-welcomeHidden', JSON.stringify(hidden));
-};
-
-// Read state for hiding welcome message from local storage instead of indexeddb
-export const readWelcomeState = () => {
-  const hidden = localStorage.getItem('moozParty-welcomeHidden');
-
-  return hidden ? JSON.parse(hidden) : false;
-};
+export const db = new DB();

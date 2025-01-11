@@ -23,8 +23,8 @@ export const Settings = () => {
   const {
     allowCustomMembers,
     setAllowCustomMembers,
-    showWelcome,
-    setShowWelcome,
+    showWelcomeMessage,
+    setShowWelcomeMessage,
   } = useRules();
   const [parentalControlPassed, setParentalControlPassed] =
     React.useState(false);
@@ -33,7 +33,6 @@ export const Settings = () => {
     <Dialog
       onOpenChange={() => {
         setParentalControlPassed(false);
-        showWelcome();
       }}
     >
       <DialogTrigger asChild>
@@ -69,11 +68,11 @@ export const Settings = () => {
                 />
               </li>
               <li className="flex items-center w-full justify-between">
-                <Label htmlFor="hide-welcome">Hide welcome message</Label>
+                <Label htmlFor="hide-welcome">Show welcome message</Label>
                 <Switch
                   id="hide-welcome"
-                  checked={showWelcome()}
-                  onCheckedChange={(value) => setShowWelcome(value)}
+                  checked={showWelcomeMessage}
+                  onCheckedChange={(value) => setShowWelcomeMessage(value)}
                 />
               </li>
             </ul>

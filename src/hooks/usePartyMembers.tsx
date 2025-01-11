@@ -1,14 +1,11 @@
 import React from 'react';
-import {
-  addMembers,
-  readFirstParty,
-  removeMember as removeMemberFromDB,
-} from '../data/db';
 import { MemberEntry } from '../types/Member';
+import { useAddMembers, useParty, useRemoveMember } from './db';
 
 export const storageKey = 'mooz-party-members';
 
 type PartyMembersContextType = {
+  partyId: string;
   partyMembers: MemberEntry[];
   addMember: (members: MemberEntry[]) => void;
   removeMember: (member: MemberEntry) => void;
@@ -17,47 +14,27 @@ type PartyMembersContextType = {
 export const PartyMembersContext =
   React.createContext<PartyMembersContextType | null>(null);
 
-export const PartyMembersProvider: React.FC<React.PropsWithChildren> = ({
-  children,
-}) => {
-  const [partyId, setPartyId] = React.useState<string | null>(null);
-  const readMembers = async () => {
-    const party = await readFirstParty();
+export const PartyMembersProvider: React.FC<
+  React.PropsWithChildren<{ id: string }>
+> = ({ id, children }) => {
+  const { data: party } = useParty({ partyId: id });
+  const { mutate: addMembersFn } = useAddMembers();
+  const { mutate: removeMemberFn } = useRemoveMember();
 
-    if (!party) {
-      throw new Error('No party found');
-    }
+  const addMember = (members: MemberEntry[]) =>
+    addMembersFn({ partyId: id, members });
 
-    if (party.id !== partyId) {
-      setPartyId(party.id);
-    }
-
-    return party.members;
-  };
-
-  const [partyMembers, setPartyMembers] = React.useState([]);
-
-  React.useEffect(() => {
-    readMembers().then(setPartyMembers);
-  }, []);
-
-  const addMember: PartyMembersContextType['addMember'] = async (members) => {
-    await addMembers(partyId as string, members);
-
-    readMembers().then(setPartyMembers);
-  };
-
-  const removeMember: PartyMembersContextType['removeMember'] = async (
-    member
-  ) => {
-    await removeMemberFromDB(partyId as string, member.id);
-
-    readMembers().then(setPartyMembers);
-  };
+  const removeMember = (member: MemberEntry) =>
+    removeMemberFn({ partyId: id, memberId: member.id });
 
   return (
     <PartyMembersContext.Provider
-      value={{ partyMembers, addMember, removeMember }}
+      value={{
+        partyId: id,
+        partyMembers: party?.members || [],
+        addMember,
+        removeMember,
+      }}
     >
       {children}
     </PartyMembersContext.Provider>

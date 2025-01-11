@@ -16,12 +16,13 @@ import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { CustomMember, MemberEntry } from '../types/Member';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 import { useRules } from '../hooks/useRules';
-import { readCustomMembers } from '../data/db';
+import { useCustomMembers } from '../hooks/db';
 
 export const AddMember: React.FC<{ uploadCallback: () => void }> = ({
   uploadCallback,
 }) => {
   const { partyMembers, addMember } = usePartyMembers();
+  const { data: customMembersRaw } = useCustomMembers();
   const [customMembers, setCustomMembers] = React.useState<CustomMember[]>([]);
   const [open, setOpen] = React.useState(false);
   const [selectedMember, setSelectedMember] = React.useState<MemberEntry[]>([]);
@@ -32,14 +33,12 @@ export const AddMember: React.FC<{ uploadCallback: () => void }> = ({
   const { allowCustomMembers } = useRules();
 
   React.useEffect(() => {
-    if (allowCustomMembers) {
-      readCustomMembers().then((members) => {
-        setCustomMembers(
-          members.map((member) => ({ ...member, type: 'custom' }))
-        );
-      });
+    if (allowCustomMembers && customMembersRaw) {
+      setCustomMembers(
+        customMembersRaw.map((member) => ({ ...member, type: 'custom' }))
+      );
     }
-  }, []);
+  }, [customMembersRaw]);
 
   React.useEffect(() => {
     if (showTooltipDelay.current) clearTimeout(showTooltipDelay.current);

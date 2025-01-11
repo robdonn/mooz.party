@@ -5,7 +5,7 @@ import { App } from './App';
 
 import './global.css';
 import './index.css';
-import { createParty, initDB, readParties } from './data/db';
+import { db } from './data/db';
 import { generateId } from './lib/utils/generateId';
 
 const APP_ID = 'root';
@@ -19,14 +19,17 @@ if (!rootElement) {
 const root = createRoot(rootElement);
 
 const init = async () => {
-  await initDB();
+  await db.init();
+  await db.seedSettingsIfNotSet();
 
-  const parties = await readParties();
+  const parties = await db.readParties();
   if (!parties.length) {
-    await createParty(generateId());
+    await db.createParty(generateId());
   }
 
-  root.render(<App />);
+  const [party] = await db.readParties();
+
+  root.render(<App id={party.id} />);
 };
 
 init();
